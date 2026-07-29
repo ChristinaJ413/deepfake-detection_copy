@@ -1,15 +1,24 @@
 # macOS
 .DS_Store
 
-# Python environment
+# Python
 .venv/
 venv/
 __pycache__/
 *.pyc
+.ipynb_checkpoints/
 
-# Large trained model files
-models/*.pth
-models/*.pt
-models/*.ckpt
-models/*.onnx
-models/*.onnx.data
+# Keep original training models out of ordinary Git
+/models/*.pth
+/models/*.pt
+/models/*.ckpt
+/models/*.onnx
+/models/*.onnx.data
+/models/*.npz
+
+# Local datasets
+data/raw/
+data/processed/
+
+# Uploaded/test images
+uploads/
