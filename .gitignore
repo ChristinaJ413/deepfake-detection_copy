@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Python environment
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Large trained model files
+models/*.pth
+models/*.pt
+models/*.ckpt
+models/*.onnx
+models/*.onnx.data
