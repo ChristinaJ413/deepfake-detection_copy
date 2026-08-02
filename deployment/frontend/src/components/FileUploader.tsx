@@ -27,7 +27,7 @@ export default function FileUploader() {
         const formData = new FormData();
         formData.append('file', file);
 
-        const response = await fetch('http://44.206.227.219:8001/predict', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/predict`, {
             method: 'POST',
             body: formData,
         });
