@@ -3,155 +3,93 @@
 **Working Name:** Synthetic Sight  
 **AI4ALL Team 9C**
 
-This repository contains the notebooks and supporting files for our deepfake detection project.
+## 1. Project Overview & Problem Statement
+With the rapid advancement of generative AI models, synthetic imagery has become increasingly realistic and accessible. The goal of **Synthetic Sight** is to develop a robust binary image classification pipeline capable of distinguishing between real human faces and AI-generated synthetic faces. This project focuses on evaluating deep learning architectures (specifically ResNet-50) and auditing datasets for potential demographic and data biases.
 
-Each teammate should work from their own GitHub branch so they can experiment without changing the shared `main` branch.
+## 2. Dataset Information
+We used the **140k Real and Fake Faces Kaggle Dataset**:
+* **Real Images (70,000):** Sourced from NVIDIA’s Flickr-Faces-HQ (FFHQ) dataset.
+* **Fake Images (70,000):** Sampled from 1 Million StyleGAN-generated synthetic faces.
+* **Pre-processing:** All images are normalized and resized to 224 × 224 pixels for ResNet-50 across training, validation, and test splits.
 
----
+## 3. Project Structure
+```plaintext
+deepfake-detection/
+├── assets/                 # Visualizations, diagrams, and evaluation plots
+├── data/                   # Data README and setup instructions
+├── deployment/
+│   └── streamlit/          # Streamlit web application code
+├── docs/                   # References and project documentation
+├── models/                 # Saved model weights and checkpoints
+├── notebooks/              # Core project notebooks
+│   ├── deepfake_detector.ipynb        # Exploratory data analysis & baseline setup
+│   ├── resnet50_training.ipynb        # ResNet-50 model training & evaluation
+│   └── data_bias_audit.ipynb          # Demographic and dataset bias evaluation
+├── PROJECT_SCOPE.ipynb     # Initial project scope and plan
+├── README.md               # Main repository documentation
+└── requirements.txt        # Dependencies required to run the project
 
-## 1. Select or Create Your Branch
-
-Open the repository:
-
-```text
-https://github.com/Shloka-16/deepfake-detection
 ```
 
-Use the branch menu near the upper-left corner of the repository.
+## 4. Methodology & Model Architecture
+- **Data Sampling & Augmentation:** Balanced samples of real and fake images are loaded, normalized using ImageNet mean/std statistics, and fed through PyTorch DataLoader pipelines.
 
-- Select your existing branch, or
-- Type your name and create a new branch from `main`.
+- **Model Selection (ResNet-50):** We fine-tune a pre-trained ResNet-50 model for binary classification (0 = Real, 1 = Fake).
 
-Before continuing, confirm that the branch menu displays your branch name rather than `main`.
+* **Two-Stage Training Strategy:**
+  - **Stage 1 (Head-Only):** Trains only the new classifier head while keeping     the ResNet-50 backbone frozen.
+  - **Stage 2 (Fine-Tuning):** Unfreezes and fine-tunes `layer4` alongside the classifier head with early stopping based on validation score.
+  
+- **Data Bias Audit:** We conducted fairness and distribution checks in data_bias_audit.ipynb to evaluate model predictions across variations in lighting, background artifacts, and demographic representation.
 
----
+## 5. Results & Evaluation
 
-## 2. Open the Notebook in Google Colab
+### Evaluation Plots
 
-While your branch is selected, open:
+| Loss & Accuracy Curves | Validation Metrics |
+| :---: | :---: |
+| ![Loss and Accuracy](assets/resnet50_loss_accuracy_curves.png) | ![Validation Metrics](assets/validation_metrics_by_epoch.png) |
 
-```text
-deepfake_detector.ipynb
+| Final Test Confusion Matrix | ROC & Precision-Recall Curves |
+| :---: | :---: |
+| ![Confusion Matrix](assets/resnet50_final_test_confusion_matrix.png) | ![ROC and PR Curves](assets/resnet50_roc_pr_curves.png) |
+
+## 6. Setup & Reproducibility Guide
+
+**Option A: Running the Notebook in Google Colab**
+- Open resnet50_training.ipynb in Google Colab.
+- Set your runtime to GPU (Runtime > Change runtime type > T4 GPU).
+- Add your Kaggle API token to Colab Secrets as KAGGLE_API_TOKEN.
+- Run all cells top-to-bottom (Runtime > Restart session and run all).
+
+**Option B: Running Streamlit Locally**
+* **Clone the repository:**
+```bash
+git clone [https://github.com/Shloka-16/deepfake-detection.git](https://github.com/Shloka-16/deepfake-detection.git)
+cd deepfake-detection
 ```
 
-If an **Open in Colab** button appears, select it.
+* **Install dependencies:**
 
-You can also open the notebook directly through Google Colab:
+```bash
+pip install -r requirements.txt
 
-1. Go to:
-
-   ```text
-   https://colab.research.google.com
-   ```
-
-2. Select:
-
-   ```text
-   File → Open notebook → GitHub
-   ```
-
-3. Search for:
-
-   ```text
-   Shloka-16/deepfake-detection
-   ```
-
-4. Select your branch.
-
-5. Open:
-
-   ```text
-   deepfake_detector.ipynb
-   ```
-
-The Colab URL should include your branch name, such as:
-
-```text
-/blob/Kristine/
 ```
 
-If the URL contains `/blob/main/`, return to GitHub and select your personal branch before opening the notebook again.
+* **Launch the web application:**
 
----
+```bash
+streamlit run deployment/streamlit/app.py
 
-## 3. Make an Editable Copy
-
-A notebook opened directly from GitHub may not save changes back to the repository.
-
-In Colab, click:
-
-```text
-Copy to Drive
 ```
 
-Colab will open an editable copy in a new tab.
+## 7. Ethical Considerations & Limitations
 
-Rename the notebook so you can identify your copy. For example:
+* **Deepfake Risks:** Misuse of synthetic imagery poses privacy and security risks. Synthetic Sight is built strictly for detection and research purposes.
+* **Dataset Biases:** Generative models like StyleGAN can inherit biases present in their training distributions (e.g., lighting, age, or ethnicity representations).
+* **Scope Limitations:** The model is trained specifically on human face only images and may not generalize equally to full-body deepfakes or non-human imagery.
 
-```text
-Kristine_data_exploration.ipynb
-```
+## 8. Team Contributions
 
-Do not use **Save a copy as a GitHub Gist**. A Gist is separate from this repository.
+* **Team 9C (Synthetic Sight):** Collaborative work on model training pipelines, data preprocessing, bias auditing, web app deployment, and documentation.
 
----
-
-## 4. Connect and Begin Working
-
-Click:
-
-```text
-Connect
-```
-
-in the upper-right corner of Colab.
-
-Once connected, run the existing notebook cells and add your own code, notes, or visualizations.
-
-Colab saves the notebook copy to Google Drive. However, files downloaded into the Colab runtime may disappear when the runtime disconnects.
-
----
-
-## 5. Save Your Notebook Back to Your Branch
-
-When you are ready to save your work to GitHub:
-
-1. In Colab, select:
-
-   ```text
-   File → Download → Download .ipynb
-   ```
-
-2. Return to the GitHub repository.
-
-3. Confirm that your personal branch is selected.
-
-4. Select:
-
-   ```text
-   Add file → Upload files
-   ```
-
-5. Upload the downloaded `.ipynb` file.
-
-6. Enter a short description of what you changed.
-
-7. Commit the notebook to your personal branch.
-
----
-
-## Basic Workflow
-
-```text
-Select or create your GitHub branch
-        ↓
-Open the project notebook in Colab
-        ↓
-Click Copy to Drive
-        ↓
-Connect and work in the Drive copy
-        ↓
-Download the updated .ipynb file
-        ↓
-Upload and commit it to your GitHub branch
-```

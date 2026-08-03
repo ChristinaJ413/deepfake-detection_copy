@@ -22,3 +22,10 @@ data/processed/
 
 # Uploaded/test images
 uploads/
+
+# Secrets and environment variables
+.env
+.env.*
+*.pem
+*.key
+kaggle.json
